@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+  ent-new:
+    cmds:
+      - go run -mod=mod entgo.io/ent/cmd/ent new --target internal/ent/schema {{.CLI_ARGS}}
+
+  ent-gen:
+    cmds:
+      - go generate ./internal/ent
+
+  ent-describe:
+    cmds:
+      - go run -mod=mod entgo.io/ent/cmd/ent describe ./internal/ent/schema
+
+  atlas-diff:
+    cmds:
+      - go run -mod=mod ariga.io/atlas/cmd/atlas migrate diff initial --dir "file://migrations" --to "ent://internal/ent/schema" --dev-url "docker://postgres/latest/migrations?search_path=public"
