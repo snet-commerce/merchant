@@ -4,23 +4,22 @@ import (
 	"log"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/snet-commerce/merchant/internal/infrastructure/db/postgres"
-
 	"github.com/snet-commerce/merchant/internal/config"
+	"github.com/snet-commerce/merchant/internal/infrastructure/db/postgres"
 	"github.com/snet-commerce/merchant/internal/infrastructure/logger"
 )
 
 func main() {
-	logger, err := logger.Development()
+	cfg, err := config.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	logger, err := logger.ForEnv(cfg.Environment)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer logger.Sync()
-
-	cfg, err := config.Build()
-	if err != nil {
-		logger.Fatalf("failed to initialize config - %s", err)
-	}
 
 	db, err := postgres.Connect(
 		cfg.Postgres.PostgresURL,

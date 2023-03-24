@@ -1,9 +1,28 @@
 package logger
 
 import (
+	"fmt"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+const (
+	production = "prod"
+	develop    = "dev"
+)
+
+func ForEnv(env string) (logger *zap.SugaredLogger, err error) {
+	switch env {
+	case production:
+		logger, err = Production()
+	case develop:
+		logger, err = Development()
+	default:
+		err = fmt.Errorf("%s environment is not defined", env)
+	}
+	return logger, err
+}
 
 func Production() (*zap.SugaredLogger, error) {
 	cfg := zap.NewProductionConfig()

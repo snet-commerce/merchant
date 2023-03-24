@@ -1,6 +1,10 @@
 version: '3'
 
 tasks:
+  protoc:
+    cmds:
+      - protoc -Iproto --go_out=./proto --go-grpc_out=./proto --go_opt=module=github.com/snet-commerce/merchant/proto --go-grpc_opt=module=github.com/snet-commerce/merchant/proto ./proto/*.proto
+
   ent-new:
     cmds:
       - go run -mod=mod entgo.io/ent/cmd/ent new --target internal/ent/schema {{.CLI_ARGS}}
@@ -15,4 +19,8 @@ tasks:
 
   atlas-diff:
     cmds:
-      - go run -mod=mod ariga.io/atlas/cmd/atlas migrate diff initial --dir "file://migrations" --to "ent://internal/ent/schema" --dev-url "docker://postgres/latest/migrations?search_path=public"
+      - go run -mod=mod ariga.io/atlas/cmd/atlas migrate diff {{.CLI_ARGS}} --dir "file://migrations" --to "ent://internal/ent/schema" --dev-url "docker://postgres/latest/migrations?search_path=public"
+
+  atlas-apply:
+    cmds:
+      - go run -mod=mod ariga.io/atlas/cmd/atlas migrate apply

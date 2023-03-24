@@ -15,7 +15,8 @@ type PostgresConfig struct {
 }
 
 type Config struct {
-	Postgres PostgresConfig
+	Environment string `env:"ENV" envDefault:"dev"`
+	Postgres    PostgresConfig
 }
 
 func Build() (*Config, error) {
