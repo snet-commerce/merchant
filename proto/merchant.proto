@@ -5,7 +5,6 @@ option go_package = "github.com/snet-commerce/merchant/proto";
 package proto;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/field_mask.proto";
 
 service MerchantService {
   rpc CreateMerchant(CreateMerchantRequest) returns (CreateMerchantResponse);
@@ -18,7 +17,7 @@ service MerchantService {
 message Merchant {
   string id = 1;
   string name = 2;
-  string description = 3;
+  optional string description = 3;
   string primary_email = 4;
   optional string secondary_email = 5;
   string primary_number = 6;
@@ -30,14 +29,13 @@ message Merchant {
 }
 
 message CreateMerchantRequest {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  string primary_email = 4;
-  optional string secondary_email = 5;
-  string primary_number = 6;
-  optional string secondary_number = 7;
-  bool active = 8;
+  string name = 1;
+  optional string description = 2;
+  string primary_email = 3;
+  optional string secondary_email = 4;
+  string primary_number = 5;
+  optional string secondary_number = 6;
+  bool active = 7;
 }
 
 message CreateMerchantResponse {
@@ -46,7 +44,6 @@ message CreateMerchantResponse {
 
 message GetMerchantRequest {
   string id = 1;
-
 }
 
 message GetMerchantResponse {
@@ -54,25 +51,36 @@ message GetMerchantResponse {
 }
 
 message UpdateMerchantRequest {
-//  string name = 1;
-//  string description = 2;
-//  string primary_email = 3;
-//  optional string secondary_email = 4;
-//  string primary_number = 5;
-//  optional string secondary_number = 6;
-//  bool active = 7;
-  Merchant merchant = 1;
-  google.protobuf.FieldMask field_mask = 2;
+  string id = 1;
+  string name = 2;
+  optional string description = 3;
+  string primary_email = 4;
+  optional string secondary_email = 5;
+  string primary_number = 6;
+  optional string secondary_number = 7;
+  bool active = 8;
 }
 
 message UpdateMerchantResponse {
   Merchant merchant = 1;
 }
 
-message GetMerchantsRequest {}
+message GetMerchantsRequest {
+  optional string name = 1;
+  optional string email = 2;
+  optional string number = 3;
+  optional bool active = 4;
+  optional string tenant = 5;
+  int32 limit = 6;
+  int32 offset = 7;
+}
 
-message GetMerchantsResponse {}
+message GetMerchantsResponse {
+  repeated Merchant merchants = 1;
+}
 
-message DeleteMerchantRequest {}
+message DeleteMerchantRequest {
+  string id = 1;
+}
 
 message DeleteMerchantResponse {}
