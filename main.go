@@ -47,7 +47,7 @@ func main() {
 		}
 	}()
 
-	merchantHandler := handler.NewMerchantHandler(client)
+	merchantHandler := handler.NewMerchantHandler(client, logger)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.ServerPort))
 	if err != nil {
@@ -62,6 +62,7 @@ func main() {
 	signal.Notify(shutdownCh, os.Interrupt)
 
 	go func() {
+		logger.Infof("server is listening at port %d", cfg.ServerPort)
 		if err := srv.Serve(lis); err != nil {
 			logger.Errorf("gRPC server error occurred")
 			errorCh <- err

@@ -7,6 +7,7 @@ require (
 	github.com/caarlos0/env/v7 v7.1.0
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.3.1
+	github.com/sirupsen/logrus v1.8.1
 	go.uber.org/zap v1.24.0
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
@@ -14,7 +15,6 @@ require (
 
 require (
 	ariga.io/atlas v0.9.2-0.20230315031717-981201443636 // indirect
-	ariga.io/atlas/cmd/atlas v0.10.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect

@@ -92,3 +92,5 @@ issues:
         - errcheck
         - dupl
         - gosec
+
+# https://github.com/ent/ent/pull/3315 root cause of failed linter

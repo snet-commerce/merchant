@@ -9,6 +9,7 @@ import (
 	"github.com/snet-commerce/merchant/internal/ent/merchant"
 	"github.com/snet-commerce/merchant/internal/ent/predicate"
 	pb "github.com/snet-commerce/merchant/proto"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -16,11 +17,15 @@ import (
 
 type MerchantHandler struct {
 	client *ent.Client
+	logger *zap.SugaredLogger
 	pb.UnimplementedMerchantServiceServer
 }
 
-func NewMerchantHandler(client *ent.Client) *MerchantHandler {
-	return &MerchantHandler{client: client}
+func NewMerchantHandler(
+	client *ent.Client,
+	logger *zap.SugaredLogger,
+) *MerchantHandler {
+	return &MerchantHandler{client: client, logger: logger}
 }
 
 func (h *MerchantHandler) CreateMerchant(ctx context.Context, req *pb.CreateMerchantRequest) (*pb.CreateMerchantResponse, error) {
@@ -37,6 +42,7 @@ func (h *MerchantHandler) CreateMerchant(ctx context.Context, req *pb.CreateMerc
 		SetActive(req.Active).
 		Save(ctx)
 	if err != nil {
+		h.logger.Errorf("failed to create merchant - %s", err)
 		return nil, err
 	}
 
@@ -65,6 +71,7 @@ func (h *MerchantHandler) GetMerchant(ctx context.Context, req *pb.GetMerchantRe
 
 	m, err := h.client.Merchant.Get(ctx, id)
 	if err != nil {
+		h.logger.Errorf("failed to read merchant - %s", err)
 		return nil, err
 	}
 
@@ -102,6 +109,7 @@ func (h *MerchantHandler) UpdateMerchant(ctx context.Context, req *pb.UpdateMerc
 		SetActive(req.Active).
 		Save(ctx)
 	if err != nil {
+		h.logger.Errorf("failed to update merchant - %s", err)
 		return nil, err
 	}
 
@@ -129,6 +137,7 @@ func (h *MerchantHandler) DeleteMerchant(ctx context.Context, req *pb.DeleteMerc
 	}
 
 	if err := h.client.Merchant.DeleteOneID(id).Exec(ctx); err != nil {
+		h.logger.Errorf("failed to delete merchant - %s", err)
 		return nil, err
 	}
 
@@ -171,6 +180,7 @@ func (h *MerchantHandler) GetMerchants(ctx context.Context, req *pb.GetMerchants
 		Offset(int(req.Offset)).
 		All(ctx)
 	if err != nil {
+		h.logger.Errorf("failed to read merchants - %s", err)
 		return nil, err
 	}
 
