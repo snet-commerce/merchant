@@ -15,6 +15,7 @@ type PostgresConfig struct {
 }
 
 type Config struct {
+	ServerPort  string `env:"SERVER_PORT" envDefault:"8080"`
 	Environment string `env:"ENV" envDefault:"dev"`
 	Postgres    PostgresConfig
 }
