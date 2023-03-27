@@ -47,7 +47,7 @@ func main() {
 		}
 	}()
 
-	merchantHandler := handler.NewMerchantHandler(client, logger)
+	merchantHandler := handler.NewMerchantHandler(client.Merchant, logger)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.ServerPort))
 	if err != nil {

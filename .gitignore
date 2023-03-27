@@ -31,3 +31,4 @@ docs
 internal/ent/*
 !internal/ent/schema
 !internal/ent/generate.go
+!internal/ent/*_extension.go
