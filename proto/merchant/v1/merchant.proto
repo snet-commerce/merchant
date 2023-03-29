@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option go_package = "github.com/snet-commerce/merchant/proto";
-
-package proto;
+package merchant.v1;
 
 import "google/protobuf/timestamp.proto";
+import "query/v1/limiting.proto";
+import "query/v1/ordering.proto";
 
 service MerchantService {
   rpc CreateMerchant(CreateMerchantRequest) returns (CreateMerchantResponse);
@@ -39,7 +39,7 @@ message CreateMerchantRequest {
 }
 
 message CreateMerchantResponse {
-    Merchant merchant = 1;
+  Merchant merchant = 1;
 }
 
 message GetMerchantRequest {
@@ -66,19 +66,14 @@ message UpdateMerchantResponse {
 }
 
 message GetMerchantsRequest {
-  message Ordering {
-    string field = 1;
-    string order = 2;
-  }
-
   optional string name = 1;
   optional string email = 2;
   optional string number = 3;
   optional bool active = 4;
   optional string tenant = 5;
 
-//  common.Limiting limiting = 6;
-//  repeated common.Ordering ordering = 7;
+  query.v1.Limiting limiting = 6;
+  repeated query.v1.Ordering ordering = 7;
 }
 
 message GetMerchantsResponse {
@@ -90,3 +85,4 @@ message DeleteMerchantRequest {
 }
 
 message DeleteMerchantResponse {}
+

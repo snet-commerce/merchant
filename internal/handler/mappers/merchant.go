@@ -1,9 +1,10 @@
 package mappers
 
 import (
-	"github.com/snet-commerce/merchant/internal/ent"
-	pb "github.com/snet-commerce/merchant/proto"
+	pb "buf.build/gen/go/snet-commerce/merchant/protocolbuffers/go/merchant/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"github.com/snet-commerce/merchant/internal/ent"
 )
 
 func MerchantToProtobuf(m *ent.Merchant) *pb.Merchant {

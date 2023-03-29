@@ -4,20 +4,22 @@ import (
 	"context"
 	"fmt"
 
+	grpcpb "buf.build/gen/go/snet-commerce/merchant/grpc/go/merchant/v1/merchantv1grpc"
+	pb "buf.build/gen/go/snet-commerce/merchant/protocolbuffers/go/merchant/v1"
 	"github.com/google/uuid"
-	"github.com/snet-commerce/merchant/internal/ent"
-	"github.com/snet-commerce/merchant/internal/handler/mappers"
-	"github.com/snet-commerce/merchant/internal/query"
-	pb "github.com/snet-commerce/merchant/proto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/snet-commerce/merchant/internal/ent"
+	"github.com/snet-commerce/merchant/internal/handler/mappers"
+	"github.com/snet-commerce/merchant/internal/query"
 )
 
 type MerchantHandler struct {
 	client *ent.MerchantClient
 	logger *zap.SugaredLogger
-	pb.UnimplementedMerchantServiceServer
+	grpcpb.UnimplementedMerchantServiceServer
 }
 
 func NewMerchantHandler(
@@ -118,8 +120,8 @@ func (h *MerchantHandler) GetMerchants(ctx context.Context, req *pb.GetMerchants
 			Number: req.Number,
 			Active: req.Active,
 			Tenant: tenant,
-			Limit:  int(req.Limit),
-			Offset: int(req.Offset),
+			Limit:  int(req.Limiting.Limit),
+			Offset: int(req.Limiting.Offset),
 		},
 	)
 

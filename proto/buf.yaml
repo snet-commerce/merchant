@@ -1,0 +1,10 @@
+version: v1
+name: buf.build/snet-commerce/merchant
+deps:
+    - buf.build/snet-commerce/common
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT

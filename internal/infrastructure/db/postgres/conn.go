@@ -6,6 +6,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
+
 	"github.com/snet-commerce/merchant/internal/ent"
 )
 

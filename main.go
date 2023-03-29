@@ -7,14 +7,14 @@ import (
 	"os"
 	"os/signal"
 
+	grpcpb "buf.build/gen/go/snet-commerce/merchant/grpc/go/merchant/v1/merchantv1grpc"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+
 	"github.com/snet-commerce/merchant/internal/config"
 	"github.com/snet-commerce/merchant/internal/handler"
 	"github.com/snet-commerce/merchant/internal/infrastructure/db/postgres"
 	"github.com/snet-commerce/merchant/internal/infrastructure/logger"
-	pb "github.com/snet-commerce/merchant/proto"
-	"google.golang.org/grpc"
 )
 
 func main() {
@@ -51,11 +51,11 @@ func main() {
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.ServerPort))
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 
 	srv := grpc.NewServer()
-	pb.RegisterMerchantServiceServer(srv, merchantHandler)
+	grpcpb.RegisterMerchantServiceServer(srv, merchantHandler)
 
 	shutdownCh := make(chan os.Signal, 1)
 	errorCh := make(chan error, 1)
