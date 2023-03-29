@@ -7,7 +7,7 @@ import (
 	"github.com/snet-commerce/merchant/internal/ent/predicate"
 )
 
-type GetMerchantsParams struct {
+type GetMerchantsQueryParams struct {
 	Name   *string
 	Email  *string
 	Number *string
@@ -17,15 +17,15 @@ type GetMerchantsParams struct {
 	Offset int
 }
 
-type getMerchants struct {
+type GetMerchantsQuery struct {
 	query *ent.MerchantQuery
 }
 
-func GetMerchants(q *ent.MerchantQuery) *getMerchants {
-	return &getMerchants{query: q}
+func GetMerchants(q *ent.MerchantQuery) *GetMerchantsQuery {
+	return &GetMerchantsQuery{query: q}
 }
 
-func (q *getMerchants) Apply(params GetMerchantsParams) *ent.MerchantQuery {
+func (q *GetMerchantsQuery) Apply(params GetMerchantsQueryParams) *ent.MerchantQuery {
 	predicates := make([]predicate.Merchant, 0)
 
 	if params.Name != nil {

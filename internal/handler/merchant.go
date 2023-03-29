@@ -112,7 +112,7 @@ func (h *MerchantHandler) GetMerchants(ctx context.Context, req *pb.GetMerchants
 	}
 
 	q := query.GetMerchants(h.client.Query()).Apply(
-		query.GetMerchantsParams{
+		query.GetMerchantsQueryParams{
 			Name:   req.Name,
 			Email:  req.Email,
 			Number: req.Number,
