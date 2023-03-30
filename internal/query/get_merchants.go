@@ -2,6 +2,7 @@ package query
 
 import (
 	"github.com/google/uuid"
+
 	"github.com/snet-commerce/merchant/internal/ent"
 	"github.com/snet-commerce/merchant/internal/ent/merchant"
 	"github.com/snet-commerce/merchant/internal/ent/predicate"
