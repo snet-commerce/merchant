@@ -6,6 +6,11 @@ import (
 	"github.com/caarlos0/env/v7"
 )
 
+type Telemetry struct {
+	ZipkinURL string  `env:"ZIPKIN_TRACER_URL,notEmpty"`
+	Ratio     float64 `env:"ZIPKIN_TRACER_RATIO" envDefault:"1"`
+}
+
 type PostgresConfig struct {
 	PostgresURL     string        `env:"POSTGRES_URL,notEmpty"`
 	MaxOpenConns    int           `env:"POSTGRES_MAX_OPEN_CONNS"`
@@ -15,9 +20,11 @@ type PostgresConfig struct {
 }
 
 type Config struct {
+	ServiceName string `env:"SERVICE_NAME" envDefault:"merchants-service"`
 	ServerPort  int    `env:"SERVER_PORT" envDefault:"8080"`
 	Environment string `env:"ENV" envDefault:"dev"`
 	Postgres    PostgresConfig
+	Telemetry   Telemetry
 }
 
 func Build() (*Config, error) {

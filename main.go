@@ -1,14 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 	"os"
+	"time"
 
 	grpcpb "buf.build/gen/go/snet-commerce/merchant/grpc/go/merchant/v1/merchantv1grpc"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/snet-commerce/gorch"
+	"github.com/snet-commerce/merchant/internal/infrastructure/telemetry"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"github.com/snet-commerce/merchant/internal/config"
@@ -17,18 +23,23 @@ import (
 	"github.com/snet-commerce/merchant/internal/infrastructure/logger"
 )
 
+const telemetryShutdownTimeout = 3 * time.Second
+
 func main() {
+	// configuration
 	cfg, err := config.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// logger
 	logger, err := logger.ForEnv(cfg.Environment)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer logger.Sync()
 
+	// ent client to postgres
 	client, err := postgres.Connect(
 		cfg.Postgres.PostgresURL,
 		postgres.Config{
@@ -42,41 +53,58 @@ func main() {
 		logger.Fatalf("failed to establish connection to database - %v", err)
 	}
 
+	// init tracer
+	tracer, err := telemetry.ZipkinTracer(
+		cfg.Telemetry.ZipkinURL,
+		telemetry.WithTracerServiceName(cfg.ServiceName),
+		telemetry.WithTracerRatio(cfg.Telemetry.Ratio),
+		telemetry.WithTracerLogger(zap.NewStdLog(logger.Desugar())),
+	)
+	if err != nil {
+		logger.Fatalf("failed to setup zipkin tracer - %v", err)
+	}
+	// set tracer to open telemetry
+	otel.SetTracerProvider(tracer)
+
+	// start listener on port from config
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.ServerPort))
 	if err != nil {
 		logger.Fatalf("failed to start listener: %v", err)
 	}
 
+	// handlers
 	merchantHandler := handler.NewMerchantHandler(client.Merchant, logger)
 
-	srv := grpc.NewServer()
+	// init server
+	srv := grpc.NewServer(grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()))
 	grpcpb.RegisterMerchantServiceServer(srv, merchantHandler)
 
+	// start application orchestrator
 	orch := gorch.New(gorch.WithStopSignals(os.Interrupt))
 	orch.After(func() error {
+		logger.Info("shutting down the server...")
+		srv.Stop()
+		return nil
+	}).After(func() error {
 		return lis.Close()
 	}).After(func() error {
 		return client.Close()
+	}).After(func() error {
+		ctx, cancel := context.WithTimeout(context.Background(), telemetryShutdownTimeout)
+		defer cancel()
+		return tracer.Shutdown(ctx)
 	})
 
-	err = orch.StartAsync(func() error {
+	grpcSrvStarter := func() error {
 		logger.Infof("starting server on port %d...", cfg.ServerPort)
 		if err := srv.Serve(lis); err != nil {
-			logger.Errorf("failed to start the server: %s", err)
+			logger.Errorf("server error occurred: %v", err)
 			return err
 		}
 		return nil
-	})
-	if err != nil {
-		logger.Fatalf("error occurred on server stratup: %v", err)
 	}
 
-	select {
-	case err := <-orch.ErrorChannel():
-		logger.Errorf("shutting down the server because of unexpected error - %s", err)
-	case <-orch.StopChannel():
-		logger.Info("shutdown signal has been sent, stopping the server...")
+	for err := range orch.Serve(grpcSrvStarter) {
+		logger.Errorf("error occurred on application pipeline - %v", err)
 	}
-	srv.Stop()
-	orch.Wait()
 }

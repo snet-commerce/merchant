@@ -30,7 +30,7 @@ func Production() (*zap.SugaredLogger, error) {
 	cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	cfg.DisableStacktrace = true
 	cfg.InitialFields = map[string]any{
-		"service": "merchant service",
+		"service": "merchants-service",
 	}
 
 	logger, err := cfg.Build()
