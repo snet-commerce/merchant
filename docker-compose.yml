@@ -11,6 +11,7 @@ services:
       - POSTGRES_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@merchants-db:5432/${POSTGRES_DB}?sslmode=disable
       - ZIPKIN_TRACER_URL=${ZIPKIN_TRACER_URL}
       - ZIPKIN_TRACER_RATIO=${ZIPKIN_TRACER_RATIO}
+      - METRICS_PORT=${METRICS_PORT}
     restart: no
     depends_on:
       merchants-db:
@@ -33,7 +34,7 @@ services:
     volumes:
       - merchants-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: ["CMD-SHELL", "pg_isready"]
       interval: 3s
       timeout: 10s
       retries: 3
@@ -64,6 +65,16 @@ services:
       - zipkin-elasticsearch
     ports:
       - "9411:9411"
+
+  prometheus:
+    image: "prom/prometheus:latest"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - merchants-srv
+    ports:
+      - "9090:9090"
+
 
 volumes:
   merchants-data:

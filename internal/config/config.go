@@ -7,8 +7,9 @@ import (
 )
 
 type Telemetry struct {
-	ZipkinURL string  `env:"ZIPKIN_TRACER_URL,notEmpty"`
-	Ratio     float64 `env:"ZIPKIN_TRACER_RATIO" envDefault:"1"`
+	ZipkinURL   string  `env:"ZIPKIN_TRACER_URL,notEmpty"`
+	Ratio       float64 `env:"ZIPKIN_TRACER_RATIO" envDefault:"1"`
+	MetricsPort int     `env:"METRICS_PORT" envDefault:"2112"`
 }
 
 type PostgresConfig struct {
