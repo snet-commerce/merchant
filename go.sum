@@ -598,8 +598,8 @@ github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6L
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
 github.com/sergi/go-diff v1.0.0 h1:Kpca3qRNrduNnOQeazBd0ysaKrUJiIuISHxogkT9RPQ=
-github.com/snet-commerce/gorch v1.1.0 h1:TLJX941zaab908W5UyR5c7Qu+duPMpgcSODmSWzASaM=
-github.com/snet-commerce/gorch v1.1.0/go.mod h1:9ww8bknFcjL9xcpAiKHrtbQiSogZAIKURnwOOwk1AlM=
+github.com/snet-commerce/gorch v1.2.0 h1:tCRw5OWZZJC0ciGCMUpZSFLg04Cu53sWN9H5LfRJ9VU=
+github.com/snet-commerce/gorch v1.2.0/go.mod h1:9ww8bknFcjL9xcpAiKHrtbQiSogZAIKURnwOOwk1AlM=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
 github.com/spf13/afero v1.3.3/go.mod h1:5KUK8ByomD5Ti5Artl0RtHeI5pTF7MIDuXL3yY520V4=
 github.com/spf13/afero v1.6.0/go.mod h1:Ai8FlHk4v/PARR026UzYexafAt9roJ7LcLMAmO6Z93I=

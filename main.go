@@ -105,6 +105,7 @@ func main() {
 	}
 
 	for err := range orch.Serve(grpcSrvStarter) {
-		logger.Errorf("error occurred on application pipeline - %v", err)
+		logger.Errorf("stopping the server because of unexpected error - %v", err)
+		orch.Stop()
 	}
 }

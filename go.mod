@@ -9,7 +9,7 @@ require (
 	github.com/caarlos0/env/v7 v7.1.0
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.3.1
-	github.com/snet-commerce/gorch v1.1.0
+	github.com/snet-commerce/gorch v1.2.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.40.0
 	go.opentelemetry.io/otel v1.14.0
 	go.opentelemetry.io/otel/exporters/zipkin v1.14.0

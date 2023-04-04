@@ -60,7 +60,7 @@ func ZipkinTracer(url string, opts ...tracerConfigFunc) (*sdktrace.TracerProvide
 	}
 
 	tracerOpts := []sdktrace.TracerProviderOption{
-		sdktrace.WithBatcher(exporter), // TODO: think of batch config
+		sdktrace.WithBatcher(exporter),
 		sdktrace.WithResource(resource.NewWithAttributes(semconv.SchemaURL, rscAttrs...)),
 	}
 

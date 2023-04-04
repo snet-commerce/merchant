@@ -120,8 +120,8 @@ func (h *MerchantHandler) GetMerchants(ctx context.Context, req *pb.GetMerchants
 			Number: req.Number,
 			Active: req.Active,
 			Tenant: tenant,
-			Limit:  int(req.Limiting.Limit),
-			Offset: int(req.Limiting.Offset),
+			Limit:  int(req.GetLimiting().GetLimit()),
+			Offset: int(req.GetLimiting().GetOffset()),
 		},
 	)
 
