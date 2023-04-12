@@ -10,34 +10,34 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
 )
 
-type tracerConfigFunc func(cfg *tracerConfig)
+type zipkinTracerConfigFunc func(cfg *zipkinTracerConfig)
 
-type tracerConfig struct {
+type zipkinTracerConfig struct {
 	ratio   *float64
 	logger  *log.Logger
 	service string
 }
 
-func WithTracerRatio(ratio float64) tracerConfigFunc {
-	return func(cfg *tracerConfig) {
+func WithTracerRatio(ratio float64) zipkinTracerConfigFunc {
+	return func(cfg *zipkinTracerConfig) {
 		cfg.ratio = &ratio
 	}
 }
 
-func WithTracerLogger(logger *log.Logger) tracerConfigFunc {
-	return func(cfg *tracerConfig) {
+func WithTracerLogger(logger *log.Logger) zipkinTracerConfigFunc {
+	return func(cfg *zipkinTracerConfig) {
 		cfg.logger = logger
 	}
 }
 
-func WithTracerServiceName(s string) tracerConfigFunc {
-	return func(cfg *tracerConfig) {
+func WithTracerServiceName(s string) zipkinTracerConfigFunc {
+	return func(cfg *zipkinTracerConfig) {
 		cfg.service = s
 	}
 }
 
-func ZipkinTracer(url string, opts ...tracerConfigFunc) (*sdktrace.TracerProvider, error) {
-	var cfg tracerConfig
+func ZipkinTracer(url string, opts ...zipkinTracerConfigFunc) (*sdktrace.TracerProvider, error) {
+	var cfg zipkinTracerConfig
 	for _, optFn := range opts {
 		if optFn != nil {
 			optFn(&cfg)

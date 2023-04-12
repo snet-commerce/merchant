@@ -1,29 +1,7 @@
 version: '3'
 
 services:
-  merchants-srv:
-    build:
-      context: .
-    environment:
-      - SERVICE_NAME=${SERVICE_NAME}
-      - SERVER_PORT=${SERVER_PORT}
-      - ENV=dev
-      - POSTGRES_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@merchants-db:5432/${POSTGRES_DB}?sslmode=disable
-      - ZIPKIN_TRACER_URL=${ZIPKIN_TRACER_URL}
-      - ZIPKIN_TRACER_RATIO=${ZIPKIN_TRACER_RATIO}
-      - METRICS_PORT=${METRICS_PORT}
-    restart: no
-    depends_on:
-      merchants-db:
-        condition: "service_healthy"
-      atlas-migrations:
-        condition: "service_completed_successfully"
-      zipkin:
-        condition: "service_started"
-    ports:
-      - "8080:8080"
-
-  merchants-db:
+  merchant-db:
     image: "postgres:latest"
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -32,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - merchants-data:/var/lib/postgresql/data
+      - merchant-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 3s
@@ -44,37 +22,9 @@ services:
     volumes:
       - ./migrations:/migrations
     depends_on:
-      merchants-db:
+      merchant-db:
         condition: "service_healthy"
-    command: migrate apply --dir file://migrations --url postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@merchants-db:5432/${POSTGRES_DB}?sslmode=disable
-
-  zipkin-elasticsearch:
-    image: "ghcr.io/openzipkin/zipkin-elasticsearch7:latest"
-    ports:
-      - "9200:9200"
-
-  zipkin:
-    image: "ghcr.io/openzipkin/zipkin:latest"
-    environment:
-      - STORAGE_TYPE=elasticsearch
-      - ES_HOSTS=zipkin-elasticsearch:9200
-      - QUERY_LOG_LEVEL=DEBUG
-      - QUERY_TIMEOUT=10s
-      - QUERY_PORT=9411
-    depends_on:
-      - zipkin-elasticsearch
-    ports:
-      - "9411:9411"
-
-  prometheus:
-    image: "prom/prometheus:latest"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - merchants-srv
-    ports:
-      - "9090:9090"
-
+    command: migrate apply --dir file://migrations --url postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@merchant-db:5432/${POSTGRES_DB}?sslmode=disable
 
 volumes:
-  merchants-data:
+  merchant-data:
