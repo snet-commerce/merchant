@@ -7,7 +7,7 @@ import (
 )
 
 type Telemetry struct {
-	ZipkinURL   string  `env:"ZIPKIN_TRACER_URL,notEmpty"`
+	ZipkinURL   string  `env:"ZIPKIN_TRACER_URL"`
 	Ratio       float64 `env:"ZIPKIN_TRACER_RATIO" envDefault:"1"`
 	MetricsPort int     `env:"METRICS_PORT" envDefault:"2112"`
 }

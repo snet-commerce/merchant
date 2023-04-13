@@ -5,22 +5,19 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func Development() (*zap.Logger, error) {
-	return config().Build()
+func Development(opts ...zap.Option) (*zap.Logger, error) {
+	return config().Build(opts...)
 }
 
-func Production() (*zap.Logger, error) {
+func Production(opts ...zap.Option) (*zap.Logger, error) {
 	cfg := config()
 	cfg.DisableStacktrace = true
-	return cfg.Build()
+	return cfg.Build(opts...)
 }
 
 func config() zap.Config {
 	cfg := zap.NewDevelopmentConfig()
 	cfg.OutputPaths = []string{"stdout"}
 	cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	cfg.InitialFields = map[string]any{
-		"service": "merchant service",
-	}
 	return cfg
 }

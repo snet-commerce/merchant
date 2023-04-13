@@ -43,7 +43,7 @@ func (h *MerchantHandler) CreateMerchant(ctx context.Context, req *pb.CreateMerc
 		SetActive(req.Active).
 		Save(ctx)
 	if err != nil {
-		h.logger.Errorf("failed to create merchant - %s", err)
+		h.logger.Errorf("failed to create merchant - %v", err)
 		return nil, err
 	}
 
@@ -58,7 +58,7 @@ func (h *MerchantHandler) GetMerchant(ctx context.Context, req *pb.GetMerchantRe
 
 	m, err := h.client.Get(ctx, id)
 	if err != nil {
-		h.logger.Errorf("failed to read merchant - %s", err)
+		h.logger.Errorf("failed to read merchant - %v", err)
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (h *MerchantHandler) GetMerchant(ctx context.Context, req *pb.GetMerchantRe
 func (h *MerchantHandler) UpdateMerchant(ctx context.Context, req *pb.UpdateMerchantRequest) (*pb.UpdateMerchantResponse, error) {
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to parse id as uuid - %s", err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to parse id as uuid - %v", err))
 	}
 
 	m, err := h.client.
@@ -82,7 +82,7 @@ func (h *MerchantHandler) UpdateMerchant(ctx context.Context, req *pb.UpdateMerc
 		SetActive(req.Active).
 		Save(ctx)
 	if err != nil {
-		h.logger.Errorf("failed to update merchant - %s", err)
+		h.logger.Errorf("failed to update merchant - %v", err)
 		return nil, err
 	}
 
@@ -92,7 +92,7 @@ func (h *MerchantHandler) UpdateMerchant(ctx context.Context, req *pb.UpdateMerc
 func (h *MerchantHandler) DeleteMerchant(ctx context.Context, req *pb.DeleteMerchantRequest) (*pb.DeleteMerchantResponse, error) {
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to parse id as uuid - %s", err))
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to parse id as uuid - %v", err))
 	}
 
 	if err := h.client.DeleteOneID(id).Exec(ctx); err != nil {
@@ -108,7 +108,7 @@ func (h *MerchantHandler) GetMerchants(ctx context.Context, req *pb.GetMerchants
 	if req.Tenant != nil {
 		t, err := uuid.Parse(*req.Tenant)
 		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to parse tenant id as uuid - %s", err))
+			return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to parse tenant id as uuid - %v", err))
 		}
 		tenant = &t
 	}
@@ -127,7 +127,7 @@ func (h *MerchantHandler) GetMerchants(ctx context.Context, req *pb.GetMerchants
 
 	merchants, err := q.All(ctx)
 	if err != nil {
-		h.logger.Errorf("failed to read merchants - %s", err)
+		h.logger.Errorf("failed to read merchants - %v", err)
 		return nil, err
 	}
 

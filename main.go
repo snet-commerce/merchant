@@ -17,11 +17,17 @@ import (
 	"go.opentelemetry.io/otel"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 
 	"github.com/snet-commerce/merchant/internal/config"
 	"github.com/snet-commerce/merchant/internal/handler"
 	"github.com/snet-commerce/merchant/internal/infrastructure/db/postgres"
+)
+
+const (
+	envDebug      = "debug"
+	envProduction = "production"
 )
 
 const tracerShutdownTimeout = 3 * time.Second
@@ -109,7 +115,7 @@ func main() {
 }
 
 func tracer(cfg *config.Config, logger *zap.SugaredLogger) (*sdktrace.TracerProvider, error) {
-	if cfg.Environment == "debug" {
+	if cfg.Environment == envDebug {
 		return telemetry.StdoutTracer()
 	}
 	return telemetry.ZipkinTracer(
@@ -121,8 +127,15 @@ func tracer(cfg *config.Config, logger *zap.SugaredLogger) (*sdktrace.TracerProv
 }
 
 func zapLogger(env string) (*zap.Logger, error) {
-	if env == "production" {
-		return logger.Production()
+	srvField := zap.Fields(zap.Field{
+		Key:    "service",
+		Type:   zapcore.StringType,
+		String: "merchant service",
+	})
+
+	if env == envProduction {
+		return logger.Production(srvField)
 	}
-	return logger.Development()
+
+	return logger.Development(srvField)
 }

@@ -1,9 +1,13 @@
 package schema
 
 import (
+	"context"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
+	ment "github.com/snet-commerce/merchant/internal/ent"
+	"github.com/snet-commerce/merchant/internal/ent/hook"
 )
 
 type Merchant struct {
@@ -23,13 +27,19 @@ func (Merchant) Fields() []ent.Field {
 	}
 }
 
-func (Merchant) Edges() []ent.Edge {
-	return nil
-}
-
 func (Merchant) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		GUID{},
 		ManagedAtMixin{},
+	}
+}
+
+func (Merchant) Hooks() []ent.Hook {
+	return []ent.Hook{
+		hook.On(func(mutator ent.Mutator) ent.Mutator {
+			return hook.MerchantFunc(func(ctx context.Context, mut *ment.MerchantMutation) (ment.Value, error) {
+				mut.Fields()
+			})
+		}, ent.OpCreate|ent.OpUpdate),
 	}
 }
